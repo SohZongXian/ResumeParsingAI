@@ -6,8 +6,6 @@ import json
 
 genai.configure(api_key="AIzaSyAeVPdH7KhfOIQQBUg96OqsAZwn5Xtb9iU")
 
-model = genai.GenerativeModel(model_name="gemini-1.5-flash")
-
 
 def get_gemini_repsonse(input):
     model = genai.GenerativeModel("gemini-1.5-flash")
@@ -24,21 +22,6 @@ def input_pdf_text(uploaded_file):
     return text
 
 
-input_prompt = """
-Hey Act Like a skilled or very experience ATS(Application Tracking System)
-with a deep understanding of tech field,software engineering,data science ,data analyst
-and big data engineer. Your task is to evaluate the resume based on the given job description.
-You must consider the job market is very competitive and you should provide 
-best assistance for improving thr resumes. Assign the percentage Matching based 
-on Jd and
-the missing keywords with high accuracy
-resume:{text}
-description:{jd}
-
-I want the response in one single string having the structure
-{{"JD Match":"%","MissingKeywords:[]","Profile Summary":""}}
-"""
-
 ## streamlit app
 st.title("Resume Analysis System")
 st.text("Powered by Gemini")
@@ -52,5 +35,20 @@ submit = st.button("Submit")
 if submit:
     if uploaded_file is not None:
         text = input_pdf_text(uploaded_file)
+        input_prompt = f"""
+Hey Act Like a skilled or very experience ATS(Application Tracking System)
+with a deep understanding of various industries. Your task is to evaluate the resume based on the given job description.
+You must consider the job market is very competitive and you should provide 
+best assistance for improving thr resumes. Assign the percentage matching based 
+on Jd and
+the missing keywords with high accuracy
+resume:{text}
+description:{jd}
+
+I want the response in one single string having the structure \
+{{"JD Match":"%", 
+"Missing Keywords : []",
+"Profile Summary" : ""}}
+"""
         response = get_gemini_repsonse(input_prompt)
         st.subheader(response)
